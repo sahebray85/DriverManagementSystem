@@ -5,21 +5,18 @@ import com.amazonaws.services.lambda.runtime.RequestHandler
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.kotlin.readValue
-import org.slf4j.LoggerFactory
+import java.util.UUID
 
-class DriverCreateHandler(
-    private val driverRepository: DriverRepository = ApplicationContext.driverRepository,
-    private val objectMapper: ObjectMapper = ApplicationContext.objectMapper,
-    private val logger: org.slf4j.Logger = LoggerFactory.getLogger(DriverCreateHandler::class.java)
+class DriverGetTipsHandler(
+    private val driverRepository: DriverTipsRepository = ApplicationContext.driverTippingRepository,
+    private val objectMapper: ObjectMapper = ApplicationContext.objectMapper
 ) : RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
 
     override fun handleRequest(input: APIGatewayProxyRequestEvent, context: Context): APIGatewayProxyResponseEvent {
-        val driverRequest = objectMapper.readValue<Driver>(input.body)
-        logger.info("driverRequest: {}", driverRequest)
-        val driver = driverRepository.createOrUpdate(driverRequest)
+        val driver = driverRepository.getDriverTip(UUID.fromString(input.pathParameters["id"]))
+
         return APIGatewayProxyResponseEvent()
-            .withStatusCode(201)
+            .withStatusCode(200)
             .withHeaders(mapOf("content-type" to "application/json"))
             .withBody(objectMapper.writeValueAsString(driver))
     }

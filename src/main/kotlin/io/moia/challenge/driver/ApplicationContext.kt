@@ -9,7 +9,8 @@ import software.amazon.awssdk.services.sqs.SqsClient
 import java.text.SimpleDateFormat
 
 object ApplicationContext {
-    private val region = Region.EU_CENTRAL_1
+    // private val region = Region.EU_CENTRAL_1
+    private val region = Region.US_EAST_1
     val dynamoDbClient = DynamoDbClient
             .builder()
             .region(region)
@@ -21,6 +22,7 @@ object ApplicationContext {
         .registerModule(JavaTimeModule())
 
     val driverRepository = DriverRepository(dynamoDbClient, System.getenv("TABLE_NAME") ?: "driver-test")
+    val driverTippingRepository = DriverTipsRepository(dynamoDbClient, System.getenv("TABLE_NAME") ?: "driver-tipping-test")
 
     val sqsClient = SqsClient.builder()
         .region(region)

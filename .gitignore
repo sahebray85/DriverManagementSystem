@@ -6,6 +6,7 @@
 .project
 .classpath
 out/
+infrastructure/*.json
 
 .idea/
 
