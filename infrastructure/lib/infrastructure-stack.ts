@@ -30,7 +30,7 @@ export class InfrastructureStack extends cdk.Stack {
 
     const createDriver = new lambda.Function(this, 'CreateDriverLambda', {
       timeout: cdk.Duration.seconds(30),
-      memorySize: 3008,
+      memorySize: 1024,
       functionName: 'createDriver',
       runtime: lambda.Runtime.JAVA_17,
       handler: 'io.moia.challenge.driver.DriverCreateHandler',
@@ -43,18 +43,21 @@ export class InfrastructureStack extends cdk.Stack {
 
     const getDriver = new lambda.Function(this, 'GetDriverLambda', {
       timeout: cdk.Duration.seconds(30),
-      memorySize: 3008,
+      memorySize: 1024,
       functionName: 'getDriver',
       runtime: lambda.Runtime.JAVA_17,
       handler: 'io.moia.challenge.driver.DriverGetHandler',
       code: lambda.Code.fromAsset('../build/libs/coding-challenge-cloud-native-driver-management-all.jar'),
+      environment: {
+        'TABLE_NAME': DRIVER_TABLE_NAME
+      }
     });
     driversTable.grantFullAccess(getDriver)
 
     // Test data generation Lambdas
     const driverTestDataHandler = new lambda.Function(this, 'DriverTestDataLambda', {
       timeout: cdk.Duration.seconds(30),
-      memorySize: 3008,
+      memorySize: 1024,
       functionName: 'driverTestDataHandler',
       runtime: lambda.Runtime.JAVA_17,
       handler: 'io.moia.challenge.driver.testdata.CreateDriverTestDataHandler::handle',
@@ -68,11 +71,14 @@ export class InfrastructureStack extends cdk.Stack {
 
     const driverTippingEventSampler = new lambda.Function(this, 'DriverTippingEventSampler', {
       timeout: cdk.Duration.seconds(30),
-      memorySize: 3008,
+      memorySize: 1024,
       functionName: 'driverTippingEventSampler',
       runtime: lambda.Runtime.JAVA_17,
       handler: 'io.moia.challenge.driver.testdata.DriverTippingEventSampler::handle',
       code: lambda.Code.fromAsset('../build/libs/coding-challenge-cloud-native-driver-management-all.jar'),
+      environment: {
+        'DRIVER_TIPS_QUEUE_URL': driverTipsEventQueue.queueUrl
+      }
     });
     driverTipsEventQueue.grantSendMessages(driverTippingEventSampler)
     driversTable.grantFullAccess(driverTippingEventSampler)
