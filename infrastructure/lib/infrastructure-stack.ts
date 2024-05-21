@@ -13,9 +13,20 @@ export class InfrastructureStack extends cdk.Stack {
 
     // The code that defines your stack goes here
     const DRIVER_TABLE_NAME = 'cloud-native-driver-mgmt';
+    const DRIVER_TIPS_TABLE_NAME = 'cloud-native-driver-tips';
 
     const driversTable = new dynamodb.Table(this, 'DriversTable', {
       tableName: DRIVER_TABLE_NAME,
+      billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
+      partitionKey: {
+        name: 'id',
+        type: dynamodb.AttributeType.STRING
+      },
+      removalPolicy: cdk.RemovalPolicy.DESTROY
+    });
+
+    const driverTipsTable = new dynamodb.Table(this, 'DriverTipsTable', {
+      tableName: DRIVER_TIPS_TABLE_NAME,
       billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
       partitionKey: {
         name: 'id',
@@ -53,6 +64,19 @@ export class InfrastructureStack extends cdk.Stack {
       }
     });
     driversTable.grantFullAccess(getDriver)
+
+    const getDriverTips = new lambda.Function(this, 'DriverGetTipsLambda', {
+      timeout: cdk.Duration.seconds(30),
+      memorySize: 1024,
+      functionName: 'getDriverTips',
+      runtime: lambda.Runtime.JAVA_17,
+      handler: 'io.moia.challenge.driver.DriverGetTipsHandler',
+      code: lambda.Code.fromAsset('../build/libs/coding-challenge-cloud-native-driver-management-all.jar'),
+      environment: {
+        'TABLE_NAME': DRIVER_TIPS_TABLE_NAME
+      }
+    });
+    driverTipsTable.grantFullAccess(getDriverTips)
 
     // Test data generation Lambdas
     const driverTestDataHandler = new lambda.Function(this, 'DriverTestDataLambda', {
@@ -99,5 +123,8 @@ export class InfrastructureStack extends cdk.Stack {
 
     const apiDriversId = apiDrivers.addResource('{id}')
     apiDriversId.addMethod('GET',  new apigateway.LambdaIntegration(getDriver));
+
+    const driverTips = apiDriversId.addResource('tips')
+    driverTips.addMethod('GET',  new apigateway.LambdaIntegration(getDriverTips));
   }
 }

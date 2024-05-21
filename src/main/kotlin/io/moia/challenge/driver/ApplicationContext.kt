@@ -22,6 +22,7 @@ object ApplicationContext {
         .registerModule(JavaTimeModule())
 
     val driverRepository = DriverRepository(dynamoDbClient, System.getenv("TABLE_NAME") ?: "driver-test")
+    val driverTippingRepository = DriverTipsRepository(dynamoDbClient, System.getenv("TABLE_NAME") ?: "driver-tipping-test")
 
     val sqsClient = SqsClient.builder()
         .region(region)
