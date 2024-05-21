@@ -12,9 +12,10 @@ export class InfrastructureStack extends cdk.Stack {
     super(scope, id, props);
 
     // The code that defines your stack goes here
+    const DRIVER_TABLE_NAME = 'cloud-native-driver-mgmt';
 
     const driversTable = new dynamodb.Table(this, 'DriversTable', {
-      tableName: 'challenge-cloud-native-driver-mgmt',
+      tableName: DRIVER_TABLE_NAME,
       billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
       partitionKey: {
         name: 'id',
@@ -34,6 +35,9 @@ export class InfrastructureStack extends cdk.Stack {
       runtime: lambda.Runtime.JAVA_17,
       handler: 'io.moia.challenge.driver.DriverCreateHandler',
       code: lambda.Code.fromAsset('../build/libs/coding-challenge-cloud-native-driver-management-all.jar'),
+      environment: {
+        'TABLE_NAME': DRIVER_TABLE_NAME
+      }
     });
     driversTable.grantFullAccess(createDriver)
 
