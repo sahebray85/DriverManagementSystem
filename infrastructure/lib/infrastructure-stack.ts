@@ -101,7 +101,8 @@ export class InfrastructureStack extends cdk.Stack {
       handler: 'io.moia.challenge.driver.testdata.DriverTippingEventSampler::handle',
       code: lambda.Code.fromAsset('../build/libs/coding-challenge-cloud-native-driver-management-all.jar'),
       environment: {
-        'DRIVER_TIPS_QUEUE_URL': driverTipsEventQueue.queueUrl
+        'DRIVER_TIPS_QUEUE_URL': driverTipsEventQueue.queueUrl,
+        'TABLE_NAME': DRIVER_TABLE_NAME
       }
     });
     driverTipsEventQueue.grantSendMessages(driverTippingEventSampler)

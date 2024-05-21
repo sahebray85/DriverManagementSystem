@@ -30,7 +30,7 @@ class DriverTipsRepository(
             it.key(mapOf("id" to AttributeValue.builder().s(id.toString()).build()))
         }.item().let { toDriver(it) }
 
-    fun getDriverTipsByDriverId(id: UUID): List<DriverTips> = listOf<DriverTips>()
+    fun getDriverTipsByDriverId(id: UUID): List<DriverTips> = listOf() // TODO
 
     private fun toDriver(it: MutableMap<String, AttributeValue>): DriverTips {
         return DriverTips(
