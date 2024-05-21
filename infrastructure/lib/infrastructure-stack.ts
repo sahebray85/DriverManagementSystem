@@ -33,8 +33,20 @@ export class InfrastructureStack extends cdk.Stack {
         name: 'id',
         type: dynamodb.AttributeType.STRING
       },
+      sortKey: {
+        name: 'createdDate',
+        type: dynamodb.AttributeType.STRING
+      },
       removalPolicy: cdk.RemovalPolicy.DESTROY
     });
+    const gsiProps: dynamodb.GlobalSecondaryIndexProps = {
+        indexName: 'driverId_index',
+        partitionKey: {
+            name: 'driverId',
+            type: dynamodb.AttributeType.STRING,
+        }
+    };
+    driverTipsTable.addGlobalSecondaryIndex(gsiProps)
 
     const driverTipsEventQueue = new sqs.Queue(this, 'DriverTipsEventQueue', {
       queueName: 'driver-tips-event-queue'

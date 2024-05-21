@@ -7,5 +7,6 @@ data class DriverTips(
     val id: UUID = UUID.randomUUID(),
     val amount: Double,
     val driverId: UUID,
-    val createdDate: LocalDateTime
+    val eventTime: LocalDateTime,
+    val createdDate: LocalDateTime = LocalDateTime.now()
 )

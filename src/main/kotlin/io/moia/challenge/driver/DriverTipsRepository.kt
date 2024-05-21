@@ -18,6 +18,7 @@ class DriverTipsRepository(
                         "id" to AttributeValue.builder().s(driverTips.id.toString()).build(),
                         "driverId" to AttributeValue.builder().s(driverTips.driverId.toString()).build(),
                         "amount" to AttributeValue.builder().n(driverTips.amount.toString()).build(),
+                        "eventTime" to AttributeValue.builder().s(driverTips.eventTime.toString()).build(),
                         "createdDate" to AttributeValue.builder().s(driverTips.createdDate.toString()).build()
                     )
                 )
@@ -37,6 +38,7 @@ class DriverTipsRepository(
             id = UUID.fromString(it["id"]!!.s()),
             driverId = UUID.fromString(it["driverId"]!!.s()),
             amount = it["amount"]!!.n().toDouble(),
+            eventTime = LocalDateTime.parse(it["eventTime"]!!.s()),
             createdDate = LocalDateTime.parse(it["createdDate"]!!.s())
         )
     }
