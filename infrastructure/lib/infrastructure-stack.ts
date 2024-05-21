@@ -6,6 +6,7 @@ import * as lambda from 'aws-cdk-lib/aws-lambda'
 import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
 import * as sqs from 'aws-cdk-lib/aws-sqs';
 import * as targets from 'aws-cdk-lib/aws-events-targets';
+import * as lambdaEventSources from 'aws-cdk-lib/aws-lambda-event-sources';
 
 export class InfrastructureStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
@@ -64,6 +65,24 @@ export class InfrastructureStack extends cdk.Stack {
       }
     });
     driversTable.grantFullAccess(getDriver)
+
+
+    // SQS Event (Tipping) Consumer
+    const driverTipsConsumer = new lambda.Function(this, 'DriverTipsEventConsumerLambda', {
+      timeout: cdk.Duration.seconds(30),
+      memorySize: 1024,
+      functionName: 'driverTipsConsumer',
+      runtime: lambda.Runtime.JAVA_17,
+      handler: 'io.moia.challenge.driver.DriverTipsConsumerHandler',
+      code: lambda.Code.fromAsset('../build/libs/coding-challenge-cloud-native-driver-management-all.jar'),
+      environment: {
+        'TABLE_NAME': DRIVER_TIPS_TABLE_NAME
+      }
+    });
+    driverTipsTable.grantFullAccess(driverTipsConsumer)
+    driverTipsEventQueue.grantConsumeMessages(driverTipsConsumer)
+    const eventSource = new lambdaEventSources.SqsEventSource(driverTipsEventQueue);
+    driverTipsConsumer.addEventSource(eventSource);
 
     const getDriverTips = new lambda.Function(this, 'DriverGetTipsLambda', {
       timeout: cdk.Duration.seconds(30),
