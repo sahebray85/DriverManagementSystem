@@ -42,5 +42,4 @@ class DriverTipsRepository(
             createdDate = LocalDateTime.parse(it["createdDate"]!!.s())
         )
     }
-
 }
