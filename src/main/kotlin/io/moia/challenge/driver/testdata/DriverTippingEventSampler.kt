@@ -1,7 +1,7 @@
 package io.moia.challenge.driver.testdata
 
 import io.moia.challenge.driver.ApplicationContext
-import io.moia.challenge.driver.DriverRepository
+import io.moia.challenge.driver.repository.DriverRepository
 import software.amazon.awssdk.services.sqs.SqsClient
 import java.text.DecimalFormat
 import java.time.Instant

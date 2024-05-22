@@ -1,10 +1,13 @@
-package io.moia.challenge.driver
+package io.moia.challenge.driver.handlers
 
 import com.amazonaws.services.lambda.runtime.Context
 import com.amazonaws.services.lambda.runtime.RequestHandler
 import com.amazonaws.services.lambda.runtime.events.SQSEvent
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
+import io.moia.challenge.driver.ApplicationContext
+import io.moia.challenge.driver.models.DriverTips
+import io.moia.challenge.driver.repository.DriverTipsRepository
 
 class DriverTipsConsumerHandler(
     private val driverTipsRepository: DriverTipsRepository = ApplicationContext.driverTippingRepository,

@@ -1,8 +1,8 @@
 package io.moia.challenge.driver.testdata
 
 import io.moia.challenge.driver.ApplicationContext
-import io.moia.challenge.driver.Driver
-import io.moia.challenge.driver.DriverRepository
+import io.moia.challenge.driver.models.Driver
+import io.moia.challenge.driver.repository.DriverRepository
 import java.util.UUID
 
 class CreateDriverTestDataHandler(

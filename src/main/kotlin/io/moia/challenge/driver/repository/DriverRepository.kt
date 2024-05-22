@@ -1,8 +1,9 @@
-package io.moia.challenge.driver
+package io.moia.challenge.driver.repository
 
+import io.moia.challenge.driver.models.Driver
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient
 import software.amazon.awssdk.services.dynamodb.model.AttributeValue
-import java.util.UUID
+import java.util.*
 
 class DriverRepository(
     private val dynamoDbClient: DynamoDbClient,
@@ -30,9 +31,10 @@ class DriverRepository(
             it.tableName(tableName)
             it.key(mapOf("id" to AttributeValue.builder().s(id.toString()).build()))
         }
+
         if (driver.hasItem())
             return driver.item()?.let { toDriver(it) }
-        return null;
+        return null
     }
 
     fun getDrivers(): List<Driver> =

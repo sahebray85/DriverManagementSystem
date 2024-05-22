@@ -2,6 +2,10 @@ package io.moia.challenge.driver
 
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent
 import com.jayway.jsonpath.JsonPath
+import io.moia.challenge.driver.handlers.DriverCreateHandler
+import io.moia.challenge.driver.handlers.DriverGetHandler
+import io.moia.challenge.driver.models.Driver
+import io.moia.challenge.driver.repository.DriverRepository
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Test
@@ -15,7 +19,7 @@ class DriverHandlerTest {
 
     private val driverRepository: DriverRepository = mock()
     private val driverGetHandler = DriverGetHandler(driverRepository)
-    private val driverGetHDriverCreateHandlerandler = DriverCreateHandler(driverRepository)
+    private val driverGetHDriverCreateHandler = DriverCreateHandler(driverRepository)
 
     @Test
     fun `should get driver`() {
@@ -36,7 +40,7 @@ class DriverHandlerTest {
             "driverLicenseId": "${UUID.randomUUID()}"
             }"""
 
-        val response = driverGetHDriverCreateHandlerandler
+        val response = driverGetHDriverCreateHandler
             .handleRequest(APIGatewayProxyRequestEvent().withBody(body), mock())
 
         assertEquals(response.statusCode, 201)

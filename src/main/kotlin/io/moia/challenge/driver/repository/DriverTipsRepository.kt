@@ -1,5 +1,6 @@
-package io.moia.challenge.driver
+package io.moia.challenge.driver.repository
 
+import io.moia.challenge.driver.models.DriverTips
 import io.moia.challenge.driver.enums.Period
 import io.moia.challenge.driver.exceptions.InvalidTippingPeriodException
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient

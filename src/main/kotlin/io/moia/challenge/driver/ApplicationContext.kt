@@ -3,6 +3,8 @@ package io.moia.challenge.driver
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import io.moia.challenge.driver.repository.DriverRepository
+import io.moia.challenge.driver.repository.DriverTipsRepository
 import software.amazon.awssdk.regions.Region
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient
 import software.amazon.awssdk.services.sqs.SqsClient

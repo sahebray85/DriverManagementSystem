@@ -1,10 +1,13 @@
-package io.moia.challenge.driver
+package io.moia.challenge.driver.handlers
 
 import com.amazonaws.services.lambda.runtime.Context
 import com.amazonaws.services.lambda.runtime.RequestHandler
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent
-import com.fasterxml.jackson.databind.ObjectMapper
+import io.moia.challenge.driver.ApplicationContext
+import io.moia.challenge.driver.repository.DriverRepository
+import io.moia.challenge.driver.models.DriverTips
+import io.moia.challenge.driver.repository.DriverTipsRepository
 import software.amazon.awssdk.http.HttpStatusCode
 import java.math.RoundingMode
 import java.text.DecimalFormat
