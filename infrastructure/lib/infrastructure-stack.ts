@@ -57,7 +57,7 @@ export class InfrastructureStack extends cdk.Stack {
       memorySize: 1024,
       functionName: 'createDriver',
       runtime: lambda.Runtime.JAVA_17,
-      handler: 'io.moia.challenge.driver.DriverCreateHandler',
+      handler: 'io.moia.challenge.driver.handlers.DriverCreateHandler',
       code: lambda.Code.fromAsset('../build/libs/coding-challenge-cloud-native-driver-management-all.jar'),
       environment: {
         'DRIVER_TABLE_NAME': DRIVER_TABLE_NAME
@@ -70,7 +70,7 @@ export class InfrastructureStack extends cdk.Stack {
       memorySize: 1024,
       functionName: 'getDriver',
       runtime: lambda.Runtime.JAVA_17,
-      handler: 'io.moia.challenge.driver.DriverGetHandler',
+      handler: 'io.moia.challenge.driver.handlers.DriverGetHandler',
       code: lambda.Code.fromAsset('../build/libs/coding-challenge-cloud-native-driver-management-all.jar'),
       environment: {
         'DRIVER_TABLE_NAME': DRIVER_TABLE_NAME
@@ -85,7 +85,7 @@ export class InfrastructureStack extends cdk.Stack {
       memorySize: 1024,
       functionName: 'driverTipsConsumer',
       runtime: lambda.Runtime.JAVA_17,
-      handler: 'io.moia.challenge.driver.DriverTipsConsumerHandler',
+      handler: 'io.moia.challenge.driver.handlers.DriverTipsConsumerHandler',
       code: lambda.Code.fromAsset('../build/libs/coding-challenge-cloud-native-driver-management-all.jar'),
       environment: {
         'DRIVER_TIPS_TABLE_NAME': DRIVER_TIPS_TABLE_NAME
@@ -102,7 +102,7 @@ export class InfrastructureStack extends cdk.Stack {
       memorySize: 1024,
       functionName: 'getDriverTips',
       runtime: lambda.Runtime.JAVA_17,
-      handler: 'io.moia.challenge.driver.DriverGetTipsHandler',
+      handler: 'io.moia.challenge.driver.handlers.DriverGetTipsHandler',
       code: lambda.Code.fromAsset('../build/libs/coding-challenge-cloud-native-driver-management-all.jar'),
       environment: {
         'DRIVER_TABLE_NAME': DRIVER_TABLE_NAME,

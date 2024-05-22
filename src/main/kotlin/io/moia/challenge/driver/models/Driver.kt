@@ -1,4 +1,4 @@
-package io.moia.challenge.driver
+package io.moia.challenge.driver.models
 
 import java.time.LocalDateTime
 import java.util.UUID

@@ -1,5 +1,6 @@
-package io.moia.challenge.driver
+package io.moia.challenge.driver.repository
 
+import io.moia.challenge.driver.models.DriverTips
 import io.moia.challenge.driver.enums.Period
 import io.moia.challenge.driver.exceptions.InvalidTippingPeriodException
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient
@@ -47,8 +48,12 @@ class DriverTipsRepository(
         }.items().map { toDriverTips(it) }
     }
 
-    private fun getEventStartDate(period: String?): String {
-        val periodEnum = period?.let { Period.valueOf(it.uppercase()) }
+    fun getEventStartDate(period: String?): String {
+        val periodEnum = try {
+            period?.let { Period.valueOf(it.uppercase()) }
+        } catch (ex: Exception) {
+            throw period?.let { InvalidTippingPeriodException(it) }!!
+        }
         if (periodEnum == Period.TODAY) {
             return LocalDate.now().toString()
         } else if (periodEnum == Period.WEEK) {
