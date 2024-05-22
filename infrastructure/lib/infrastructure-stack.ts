@@ -30,7 +30,7 @@ export class InfrastructureStack extends cdk.Stack {
       tableName: DRIVER_TIPS_TABLE_NAME,
       billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
       partitionKey: {
-        name: 'id',
+        name: 'driverId',
         type: dynamodb.AttributeType.STRING
       },
       sortKey: {
@@ -88,13 +88,14 @@ export class InfrastructureStack extends cdk.Stack {
       handler: 'io.moia.challenge.driver.DriverTipsConsumerHandler',
       code: lambda.Code.fromAsset('../build/libs/coding-challenge-cloud-native-driver-management-all.jar'),
       environment: {
-        'DRIVER_TABLE_NAME': DRIVER_TIPS_TABLE_NAME
+        'DRIVER_TIPS_TABLE_NAME': DRIVER_TIPS_TABLE_NAME
       }
     });
     driverTipsTable.grantFullAccess(driverTipsConsumer)
     driverTipsEventQueue.grantConsumeMessages(driverTipsConsumer)
     const eventSource = new lambdaEventSources.SqsEventSource(driverTipsEventQueue);
     driverTipsConsumer.addEventSource(eventSource);
+    driverTipsTable.grantFullAccess(driverTipsConsumer)
 
     const getDriverTips = new lambda.Function(this, 'DriverGetTipsLambda', {
       timeout: cdk.Duration.seconds(30),
@@ -135,7 +136,7 @@ export class InfrastructureStack extends cdk.Stack {
       code: lambda.Code.fromAsset('../build/libs/coding-challenge-cloud-native-driver-management-all.jar'),
       environment: {
         'DRIVER_TIPS_QUEUE_URL': driverTipsEventQueue.queueUrl,
-        'TABLE_NAME': DRIVER_TABLE_NAME
+        'DRIVER_TABLE_NAME': DRIVER_TABLE_NAME
       }
     });
     driverTipsEventQueue.grantSendMessages(driverTippingEventSampler)

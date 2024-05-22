@@ -6,12 +6,13 @@ import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent
 import com.fasterxml.jackson.databind.ObjectMapper
 import software.amazon.awssdk.http.HttpStatusCode
+import java.math.RoundingMode
+import java.text.DecimalFormat
 import java.util.UUID
 
 class DriverGetTipsHandler(
     private val driverRepository: DriverRepository = ApplicationContext.driverRepository,
-    private val driverTipsRepository: DriverTipsRepository = ApplicationContext.driverTippingRepository,
-    private val objectMapper: ObjectMapper = ApplicationContext.objectMapper
+    private val driverTipsRepository: DriverTipsRepository = ApplicationContext.driverTippingRepository
 ) : RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
 
     override fun handleRequest(input: APIGatewayProxyRequestEvent, context: Context): APIGatewayProxyResponseEvent {
@@ -25,9 +26,21 @@ class DriverGetTipsHandler(
                 .withBody("Incorrect Driver Id $driverId")
         println("DriverGetTipsHandler: $driver for period $period")
 
+        val totalTippingAmount =
+            roundOffDecimal(
+                driverTipsRepository.getDriverTipsByDriverId(driverId, period).map(DriverTips::amount).sum()
+            )
+        val msg = "Total Tipping Amount of Driver with Id $driverId is $totalTippingAmount for $period"
+
         return APIGatewayProxyResponseEvent()
             .withStatusCode(200)
             .withHeaders(mapOf("content-type" to "application/json"))
-            .withBody(objectMapper.writeValueAsString(driver))
+            .withBody(msg)
+    }
+
+    private fun roundOffDecimal(number: Double): Double? {
+        val df = DecimalFormat("#.##")
+        df.roundingMode = RoundingMode.CEILING
+        return df.format(number).toDouble()
     }
 }
