@@ -9,7 +9,7 @@ class DriverRepository(
     private val tableName: String
 ) {
 
-    fun createOrUpdate(driver: Driver): Driver {
+    fun createOrUpdate(driver: Driver): Driver? {
         dynamoDbClient.putItem {
             it.tableName(tableName)
                 .item(
@@ -25,11 +25,15 @@ class DriverRepository(
         return getDriver(driver.id)
     }
 
-    fun getDriver(id: UUID): Driver =
-        dynamoDbClient.getItem {
+    fun getDriver(id: UUID): Driver? {
+        val driver = dynamoDbClient.getItem {
             it.tableName(tableName)
             it.key(mapOf("id" to AttributeValue.builder().s(id.toString()).build()))
-        }.item().let { toDriver(it) }
+        }
+        if (driver.hasItem())
+            return driver.item()?.let { toDriver(it) }
+        return null;
+    }
 
     fun getDrivers(): List<Driver> =
         dynamoDbClient.scan {

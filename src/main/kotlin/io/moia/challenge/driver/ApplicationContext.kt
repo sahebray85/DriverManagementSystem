@@ -21,8 +21,8 @@ object ApplicationContext {
         .setSerializationInclusion(JsonInclude.Include.NON_NULL)
         .registerModule(JavaTimeModule())
 
-    val driverRepository = DriverRepository(dynamoDbClient, System.getenv("TABLE_NAME") ?: "driver-test")
-    val driverTippingRepository = DriverTipsRepository(dynamoDbClient, System.getenv("TABLE_NAME") ?: "driver-tipping-test")
+    val driverRepository = DriverRepository(dynamoDbClient, System.getenv("DRIVER_TABLE_NAME") ?: "driver-test")
+    val driverTippingRepository = DriverTipsRepository(dynamoDbClient, System.getenv("DRIVER_TIPS_TABLE_NAME") ?: "driver-tipping-test")
 
     val sqsClient = SqsClient.builder()
         .region(region)
