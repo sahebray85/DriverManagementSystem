@@ -48,8 +48,12 @@ class DriverTipsRepository(
         }.items().map { toDriverTips(it) }
     }
 
-    private fun getEventStartDate(period: String?): String {
-        val periodEnum = period?.let { Period.valueOf(it.uppercase()) }
+    fun getEventStartDate(period: String?): String {
+        val periodEnum = try {
+            period?.let { Period.valueOf(it.uppercase()) }
+        } catch (ex: Exception) {
+            throw period?.let { InvalidTippingPeriodException(it) }!!
+        }
         if (periodEnum == Period.TODAY) {
             return LocalDate.now().toString()
         } else if (periodEnum == Period.WEEK) {

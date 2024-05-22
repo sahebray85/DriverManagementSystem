@@ -1,7 +1,6 @@
-package io.moia.challenge.driver
+package io.moia.challenge.driver.repository
 
 import io.moia.challenge.driver.models.Driver
-import io.moia.challenge.driver.repository.DriverRepository
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.mock

@@ -15,7 +15,7 @@ class DriverTipsConsumerHandler(
 ) : RequestHandler<SQSEvent, Unit> {
 
     override fun handleRequest(sqsEvent: SQSEvent, context: Context) {
-        println("Example lambda with SQS Event")
+        println("DriverTipsConsumerHandler: SQS Event => $sqsEvent")
         sqsEvent.records.forEach {
             println(it.body)
             val driverTipRequest = objectMapper.readValue<DriverTips>(it.body)

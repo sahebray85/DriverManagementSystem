@@ -1,9 +1,7 @@
-package io.moia.challenge.driver
+package io.moia.challenge.driver.handlers
 
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent
 import com.jayway.jsonpath.JsonPath
-import io.moia.challenge.driver.handlers.DriverCreateHandler
-import io.moia.challenge.driver.handlers.DriverGetHandler
 import io.moia.challenge.driver.models.Driver
 import io.moia.challenge.driver.repository.DriverRepository
 import org.junit.jupiter.api.Assertions.assertEquals

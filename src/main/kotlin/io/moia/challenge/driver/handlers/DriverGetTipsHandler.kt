@@ -5,13 +5,14 @@ import com.amazonaws.services.lambda.runtime.RequestHandler
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent
 import io.moia.challenge.driver.ApplicationContext
-import io.moia.challenge.driver.repository.DriverRepository
+import io.moia.challenge.driver.exceptions.InvalidTippingPeriodException
 import io.moia.challenge.driver.models.DriverTips
+import io.moia.challenge.driver.repository.DriverRepository
 import io.moia.challenge.driver.repository.DriverTipsRepository
 import software.amazon.awssdk.http.HttpStatusCode
 import java.math.RoundingMode
 import java.text.DecimalFormat
-import java.util.UUID
+import java.util.*
 
 class DriverGetTipsHandler(
     private val driverRepository: DriverRepository = ApplicationContext.driverRepository,
@@ -29,16 +30,23 @@ class DriverGetTipsHandler(
                 .withBody("Incorrect Driver Id $driverId")
         println("DriverGetTipsHandler: $driver for period $period")
 
-        val totalTippingAmount =
-            roundOffDecimal(
-                driverTipsRepository.getDriverTipsByDriverId(driverId, period).map(DriverTips::amount).sum()
-            )
-        val msg = "Total Tipping Amount of Driver with Id $driverId is $totalTippingAmount for $period"
+        try {
+            val totalTippingAmount =
+                roundOffDecimal(
+                    driverTipsRepository.getDriverTipsByDriverId(driverId, period).map(DriverTips::amount).sum()
+                )
+            val msg = "Total Tipping Amount of Driver with Id $driverId is $totalTippingAmount for $period"
 
-        return APIGatewayProxyResponseEvent()
-            .withStatusCode(200)
-            .withHeaders(mapOf("content-type" to "application/json"))
-            .withBody(msg)
+            return APIGatewayProxyResponseEvent()
+                .withStatusCode(201)
+                .withHeaders(mapOf("content-type" to "application/json"))
+                .withBody(msg)
+        } catch (ex: InvalidTippingPeriodException) {
+            return APIGatewayProxyResponseEvent()
+                .withStatusCode(HttpStatusCode.BAD_REQUEST)
+                .withHeaders(mapOf("content-type" to "application/json"))
+                .withBody(ex.toString())
+        }
     }
 
     private fun roundOffDecimal(number: Double): Double? {
