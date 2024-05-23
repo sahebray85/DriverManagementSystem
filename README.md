@@ -72,3 +72,30 @@ To remove the traces of this application on your AWS account make sure you clean
 ```
 cd infrastructure && npx cdk destroy
 ```
+---
+## Solution
+
+### Consume Tipping Amount
+A Lambda is added to consume events from SQS queue and write (put_item) to dynamo DB. The Lambda subscribes to SQS event stream and processes the event data,
+it adds tipping id as UUID and creation date (current datetime) while persisting to DynamoDB
+
+#### Other Discarded Alternatives
+1. AWS ElastiCache - Tipping amount can be stored in elasticache, which high availability and low latency throughput. It would be suitable to aggregate the tipping amount for a given driver id and time period. However, the data can't be persisted for longer duration; so, we can't perform analytics on tipping amount. Thus the approach is discarded.                     
+2. AWS RDS - We can choose AWS RDS to store tipping amount, RDS guarantees data consistency which comes with a costs of availability, we don’t require it. It is not scalable compared to DynamoDB , as storing tipping amount is write heavy system. Moreover, data aggregation is much slower. Thus, this approach is also discarded. 
+
+### Aggregate Tipping Amount
+An API Gateway is exposed to fetch the aggregation amount for a given driver_id and time period. The API invokes a serverless lambda which fetches tipping data from DynamoDB and sends back aggregated response.
+```
+API Signature:
+Method: GET
+URL: https://{{api_id}}.execute-api.us-east-1.amazonaws.com/prod/drivers/{{driver_id}}/tips/{{period}}
+```
+
+```
+api_id: API GateWay ID
+driver_id: Driver UUID (from Driver management Database.) e.g: `337bc711-4645-483b-a7dd-27a55753db79`
+period: Time period of the aggregation. Supported Values 
+        today: Get Aggregated tipping amount for today
+        week: Get  Aggregated tipping amount for last 7 days (a relative week)
+```
+    
